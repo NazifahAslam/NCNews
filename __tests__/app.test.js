@@ -14,15 +14,29 @@ afterAll(() => {
   return db.end();
 });
 
-describe.only('GET /api', () => {
+describe('GET /api', () => {
   test('200: Responds with an object detailing the documentation for each endpoint', () => {
     return request(app)
       .get('/api')
       .expect(200)
       .then(({ body: { endpoints } }) => {
-        console.log({ endpoints });
         expect(endpoints).toEqual(endpointsJson);
         expect(typeof endpoints).toBe('object');
+      });
+  });
+});
+
+describe('GET /api/topics', () => {
+  test('200: Responds with an object with key of topics and value of an array of slug and description', () => {
+    return request(app)
+      .get('/api/topics')
+      .expect(200)
+      .then(({ body: { topics } }) => {
+        topics.forEach((topic) => {
+          expect(typeof topic.slug).toEqual('string');
+          expect(typeof topic.description).toEqual('string');
+        });
+        expect(topics.length).not.toBe(0);
       });
   });
 });
