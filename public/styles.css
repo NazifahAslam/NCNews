@@ -1,0 +1,80 @@
+body {
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  width: 100%;
+}
+h1 {
+  color: #fff8f0;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  text-align: left;
+  padding-left: 20px;
+  margin: 0px;
+  font-size: 60px;
+}
+
+h2 {
+  color: #376d4d;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  text-align: center;
+  font-size: 25px;
+}
+
+hr {
+  border: 5px solid #376d4d;
+  margin: 0%;
+  width: 100%;
+}
+
+p {
+  color: 0F0F0F;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  font-size: 15px;
+}
+
+section {
+  background: #f5f1ed;
+  background: linear-gradient(
+    0deg,
+    rgba(245, 241, 237, 1) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+
+  padding: 10px;
+  margin: 30px 0px;
+  border: #f5f1ed 2px solid;
+  width: 100%;
+}
+
+footer {
+  background-color: #1e342e;
+  padding: 10px;
+  width: 100%;
+  padding-right: 0px;
+}
+
+.title-section {
+  padding-top: 20px;
+  padding-right: 0px;
+  background: #1e342e;
+  margin: 0px;
+  border: 0px;
+  width: 100%;
+}
+.tagline {
+  color: #fff8f0;
+  text-align: left;
+  padding-left: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+}
+.footer-p {
+  color: white;
+  text-align: center;
+}
+
+.json-code {
+  font-family: monospace;
+  text-align: left;
+}
