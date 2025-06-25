@@ -9,7 +9,7 @@ const allTopics = () => {
 const allArticles = () => {
   return db
     .query(
-      `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC`
+      `SELECT articles.article_id, articles.title, articles.body, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC`
     )
     .then(({ rows }) => {
       const updatedRows = rows.map((row) => {
@@ -17,6 +17,7 @@ const allArticles = () => {
         copyRow.comment_count = Number(row.comment_count);
         return copyRow;
       });
+      console.log(updatedRows);
       return updatedRows;
     });
 };
