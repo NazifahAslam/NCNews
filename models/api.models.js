@@ -32,13 +32,12 @@ const articleId = (article_id) => {
   return db
     .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
     .then(({ rows }) => {
-      console.log(rows);
       if (rows.length === 0) {
         return Promise.reject({ status: 404, message: 'not found' });
       }
-      if (error.code === '22P02') {
-        return Promise.reject({ status: 400, message: 'Bad Request' });
-      }
+      // if (typeof rows !== 'number') {
+      //   return Promise.reject({ status: 400, message: 'Bad Request' });
+      // }
       return rows[0];
     });
 };

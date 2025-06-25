@@ -82,7 +82,7 @@ describe('GET /api/users', () => {
 });
 
 describe('GET /api/articles/:article_id', () => {
-  test.skip('200: Responds with an object with the key of article and the value of an article object with properties', () => {
+  test('200: Responds with an object with the key of article and the value of an article object with properties', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)

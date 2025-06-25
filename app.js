@@ -28,15 +28,22 @@ app.get('/api/users', fetchUsers);
 app.get('/api/articles/:article_id', fetchArticleId);
 
 app.use((error, request, response, next) => {
-  response.status(error.status).send({ message: 'not found' });
+  if (error.status) {
+    response.status(error.status).send({ message: 'not found' });
+  } else next(err);
 });
 
 app.use((error, request, response, next) => {
   if (error.code === '22P02') {
     response.status(error.status).send({ message: 'bad request' });
-  }
+  } else next(err);
   // console.log(error, 'hi from 400 app');
   // next;
+});
+
+app.use((error, request, response, next) => {
+  console.log(error);
+  response.status(500).send({ msg: 'Internal Server Error' });
 });
 
 module.exports = app;
