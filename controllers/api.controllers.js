@@ -1,12 +1,17 @@
 const endpointsJson = require('../endpoints.json');
-const { topic_id, allArticles, user_info } = require('../models/api.models');
+const {
+  allTopics,
+  allArticles,
+  allUsers,
+  articleId,
+} = require('../models/api.models');
 
 const fetchApi = (request, response) => {
   return response.status(200).send({ endpoints: endpointsJson });
 };
 
 const fetchTopics = (request, response) => {
-  return topic_id()
+  return allTopics()
     .then((rows) => {
       response.status(200).send({ topics: rows });
     })
@@ -26,8 +31,7 @@ const fetchArticles = (request, response) => {
 };
 
 const fetchUsers = (request, response) => {
-  console.log('hello from controller');
-  return user_info()
+  return allUsers()
     .then((rows) => {
       response.status(200).send({ users: rows });
     })
@@ -36,4 +40,22 @@ const fetchUsers = (request, response) => {
     });
 };
 
-module.exports = { fetchApi, fetchTopics, fetchArticles, fetchUsers };
+const fetchArticleId = (request, response, next) => {
+  console.log('hello from controller');
+  const { article_id } = request.params;
+  return articleId(article_id)
+    .then((rows) => {
+      response.status(200).send({ article: rows });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+module.exports = {
+  fetchApi,
+  fetchTopics,
+  fetchArticles,
+  fetchUsers,
+  fetchArticleId,
+};

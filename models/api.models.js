@@ -1,6 +1,6 @@
 const db = require('../db/connection');
 
-const topic_id = () => {
+const allTopics = () => {
   return db.query(`SELECT * FROM topics`).then(({ rows }) => {
     return rows;
   });
@@ -21,11 +21,26 @@ const allArticles = () => {
     });
 };
 
-const user_info = () => {
-  console.log('hello from models');
+const allUsers = () => {
   return db.query(`SELECT * FROM users`).then(({ rows }) => {
     return rows;
   });
 };
 
-module.exports = { topic_id, allArticles, user_info };
+const articleId = (article_id) => {
+  console.log('hello from models');
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .then(({ rows }) => {
+      console.log(rows);
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, message: 'not found' });
+      }
+      if (error.code === '22P02') {
+        return Promise.reject({ status: 400, message: 'Bad Request' });
+      }
+      return rows[0];
+    });
+};
+
+module.exports = { allTopics, allArticles, allUsers, articleId };

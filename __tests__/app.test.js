@@ -80,3 +80,36 @@ describe('GET /api/users', () => {
       });
   });
 });
+
+describe('GET /api/articles/:article_id', () => {
+  test.skip('200: Responds with an object with the key of article and the value of an article object with properties', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(1);
+        expect(typeof article.author).toBe('string');
+        expect(typeof article.title).toBe('string');
+        expect(typeof article.topic).toBe('string');
+        expect(typeof article.created_at).toBe('string');
+        expect(typeof article.votes).toBe('number');
+        expect(typeof article.article_img_url).toBe('string');
+      });
+  });
+  test('404: responds with an error when given an id that is not in our datatbase', () => {
+    return request(app)
+      .get('/api/articles/100')
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe('not found');
+      });
+  });
+  test.skip('400: responds with an error when given an id that is not the correct format', () => {
+    return request(app)
+      .get('/api/articles/hello')
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe('bad request');
+      });
+  });
+});
