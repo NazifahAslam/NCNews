@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const db = require('./db/connection');
+const cors = require('cors');
 
 const {
   fetchApi,
@@ -9,6 +10,8 @@ const {
   fetchUsers,
   fetchArticleId,
 } = require('./controllers/api.controllers');
+
+app.use(cors());
 
 app.use(express.json());
 
