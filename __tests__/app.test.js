@@ -106,7 +106,7 @@ describe('GET /api/articles/:article_id', () => {
         expect(message).toBe('not found');
       });
   });
-  test.skip('400: responds with an error when given an id that is not the correct format', () => {
+  test('400: responds with an error when given an id that is not the correct format', () => {
     return request(app)
       .get('/api/articles/hello')
       .expect(400)
@@ -115,3 +115,40 @@ describe('GET /api/articles/:article_id', () => {
       });
   });
 });
+
+describe('GET /api/articles/:article_id/comments', () => {
+  test('200: responds with an object with the key of comments and the value of an array of comments for the given article_id.', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe('number');
+          expect(typeof comment.votes).toBe('number');
+          expect(typeof comment.created_at).toBe('string');
+          expect(typeof comment.author).toBe('string');
+          expect(typeof comment.body).toBe('string');
+          expect(comment.article_id).toBe(1);
+        });
+      });
+  });
+  test('404: responds with an error when given an id that is not in our datatbase with comments endpoint.', () => {
+    return request(app)
+      .get('/api/articles/100/comments')
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe('not found');
+      });
+  });
+  test('400: responds with an error when given an id that is not the correct format with comments endpoint.', () => {
+    return request(app)
+      .get('/api/articles/hello')
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe('bad request');
+      });
+  });
+});
+
+/*
+ */

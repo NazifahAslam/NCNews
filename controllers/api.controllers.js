@@ -4,6 +4,7 @@ const {
   allArticles,
   allUsers,
   articleId,
+  articleIdComments,
 } = require('../models/api.models');
 
 const fetchApi = (request, response) => {
@@ -41,11 +42,21 @@ const fetchUsers = (request, response) => {
 };
 
 const fetchArticleId = (request, response, next) => {
-  console.log('hello from controller');
   const { article_id } = request.params;
   return articleId(article_id)
     .then((rows) => {
       response.status(200).send({ article: rows });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+const fetchArticleIdComments = (request, response, next) => {
+  const { article_id } = request.params;
+  return articleIdComments(article_id)
+    .then((comments) => {
+      response.status(200).send({ comments: comments });
     })
     .catch((error) => {
       next(error);
@@ -58,4 +69,5 @@ module.exports = {
   fetchArticles,
   fetchUsers,
   fetchArticleId,
+  fetchArticleIdComments,
 };

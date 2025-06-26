@@ -17,7 +17,6 @@ const allArticles = () => {
         copyRow.comment_count = Number(row.comment_count);
         return copyRow;
       });
-      console.log(updatedRows);
       return updatedRows;
     });
 };
@@ -29,18 +28,34 @@ const allUsers = () => {
 };
 
 const articleId = (article_id) => {
-  console.log('hello from models');
   return db
     .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, message: 'not found' });
       }
-      // if (typeof rows !== 'number') {
-      //   return Promise.reject({ status: 400, message: 'Bad Request' });
-      // }
       return rows[0];
     });
 };
 
-module.exports = { allTopics, allArticles, allUsers, articleId };
+const articleIdComments = (article_id) => {
+  return db
+    .query(
+      `SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM comments WHERE article_id = $1 ORDER BY comments.created_at DESC`,
+      [article_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, message: 'not found' });
+      }
+      return rows;
+    });
+};
+
+module.exports = {
+  allTopics,
+  allArticles,
+  allUsers,
+  articleId,
+  articleIdComments,
+};
