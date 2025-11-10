@@ -1,4 +1,4 @@
-const db = require('../db/connection');
+const db = require("../db/connection");
 
 const allTopics = () => {
   return db.query(`SELECT * FROM topics`).then(({ rows }) => {
@@ -32,7 +32,7 @@ const articleId = (article_id) => {
     .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, message: 'not found' });
+        return Promise.reject({ status: 404, message: "not found" });
       }
       return rows[0];
     });
@@ -46,9 +46,20 @@ const articleIdComments = (article_id) => {
     )
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, message: 'not found' });
+        return Promise.reject({ status: 404, message: "not found" });
       }
       return rows;
+    });
+};
+
+const insertComments = (author, body, article_id) => {
+  return db
+    .query(
+      `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *`,
+      [author, body, article_id]
+    )
+    .then(({ rows }) => {
+      return rows[0];
     });
 };
 
@@ -58,4 +69,5 @@ module.exports = {
   allUsers,
   articleId,
   articleIdComments,
+  insertComments,
 };

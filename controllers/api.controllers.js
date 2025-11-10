@@ -1,11 +1,12 @@
-const endpointsJson = require('../endpoints.json');
+const endpointsJson = require("../endpoints.json");
 const {
   allTopics,
   allArticles,
   allUsers,
   articleId,
   articleIdComments,
-} = require('../models/api.models');
+  insertComments,
+} = require("../models/api.models");
 
 const fetchApi = (request, response) => {
   return response.status(200).send({ endpoints: endpointsJson });
@@ -63,6 +64,18 @@ const fetchArticleIdComments = (request, response, next) => {
     });
 };
 
+const postArticleComment = (request, response, next) => {
+  const { username, body } = request.body;
+  const { article_id } = request.params;
+  //console.log(addComments);
+
+  insertComments(username, body, article_id)
+    .then((comment) => {
+      response.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
 module.exports = {
   fetchApi,
   fetchTopics,
@@ -70,4 +83,5 @@ module.exports = {
   fetchUsers,
   fetchArticleId,
   fetchArticleIdComments,
+  postArticleComment,
 };

@@ -10,6 +10,7 @@ const {
   fetchUsers,
   fetchArticleId,
   fetchArticleIdComments,
+  postArticleComment,
 } = require('./controllers/api.controllers');
 
 app.use(cors());
@@ -29,6 +30,8 @@ app.get('/api/users', fetchUsers);
 app.get('/api/articles/:article_id', fetchArticleId);
 
 app.get('/api/articles/:article_id/comments', fetchArticleIdComments);
+
+app.post('/api/articles/:article_id/comments', postArticleComment);
 
 app.use((error, request, response, next) => {
   if (error.status) {
