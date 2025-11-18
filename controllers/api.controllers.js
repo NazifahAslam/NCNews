@@ -67,9 +67,22 @@ const fetchArticleIdComments = (request, response, next) => {
 const postArticleComment = (request, response, next) => {
   const { username, body } = request.body;
   const { article_id } = request.params;
-  //console.log(addComments);
 
-  insertComments(username, body, article_id)
+  if (!username || !body) {
+    return response
+      .status(400)
+      .send({ message: "username and body are required" });
+  }
+
+  articleId(article_id)
+    .then((rows) => {
+      if (rows.length === 0) {
+        return response.status(404).send({ message: "Article not found" });
+      }
+
+      return insertComments(username, body, article_id);
+    })
+
     .then((comment) => {
       response.status(201).send({ comment });
     })

@@ -166,4 +166,44 @@ describe("POST: /api/articles/:article_id/comments", () => {
         expect(comment.article_id).toBe(9);
       });
   });
+
+  test("400: Responds with error if username is missing", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ body: "Hello" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("username and body are required");
+      });
+  });
+
+  test("400: Responds with error if body is missing", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "butter_bridge" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("username and body are required");
+      });
+  });
+
+  test("404: Responds with error if article does not exist", () => {
+    return request(app)
+      .post("/api/articles/99999/comments")
+      .send({ username: "butter_bridge", body: "Hello" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+
+  test("400: Responds with error if article_id is not a number", () => {
+    return request(app)
+      .post("/api/articles/notanumber/comments")
+      .send({ username: "butter_bridge", body: "Hello" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
 });
