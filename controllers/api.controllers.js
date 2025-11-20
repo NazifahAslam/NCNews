@@ -6,6 +6,8 @@ const {
   articleId,
   articleIdComments,
   insertComments,
+  updateArticleVote,
+  removeComment,
 } = require("../models/api.models");
 
 const fetchApi = (request, response) => {
@@ -65,8 +67,8 @@ const fetchArticleIdComments = (request, response, next) => {
 };
 
 const postArticleComment = (request, response, next) => {
-  const { username, body } = request.body;
   const { article_id } = request.params;
+  const { username, body } = request.body;
 
   if (!username || !body) {
     return response
@@ -89,6 +91,38 @@ const postArticleComment = (request, response, next) => {
     .catch(next);
 };
 
+const patchArticleIdVote = (request, response, next) => {
+  const { article_id } = request.params;
+  const { inc_votes } = request.body;
+
+  if (!inc_votes || typeof inc_votes !== "number") {
+    return response.status(400).send({ message: "bad request" });
+  }
+
+  return updateArticleVote(article_id, inc_votes)
+    .then((votes) => {
+      if (!votes) {
+        return response.status(404).send({ message: "not found" });
+      }
+
+      response.status(200).send({ article: votes });
+    })
+    .catch(next);
+};
+
+const deleteComment = (request, response, next) => {
+  const { comment_id } = request.params;
+
+  removeComment(comment_id)
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return response.status(404).send({ message: "not found" });
+      }
+      return response.sendStatus(204);
+    })
+    .catch(next);
+};
+
 module.exports = {
   fetchApi,
   fetchTopics,
@@ -97,4 +131,6 @@ module.exports = {
   fetchArticleId,
   fetchArticleIdComments,
   postArticleComment,
+  patchArticleIdVote,
+  deleteComment,
 };

@@ -6,6 +6,7 @@ const app = require("../app");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
 const comments = require("../db/data/test-data/comments");
+const { articleId } = require("../models/api.models");
 
 beforeEach(() => {
   return seed(data);
@@ -204,6 +205,94 @@ describe("POST: /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe("bad request");
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: update the number of article's votes and returns the updated article with the correct increment vote count", () => {
+    let originalVotes;
+
+    return request(app)
+      .get("/api/articles/9")
+      .then(({ body: { article } }) => {
+        originalVotes = article.votes;
+        return request(app)
+          .patch("/api/articles/9")
+          .send({ inc_votes: 1 })
+          .expect(200);
+      })
+      .then(({ body: { article } }) => {
+        expect(typeof article.votes).toBe("number");
+        expect(article.votes).toBe(originalVotes + 1);
+      });
+  });
+
+  test("200: update the number of article's votes and returns the updated article with the correct decrement vote count", () => {
+    let originalVotes;
+
+    return request(app)
+      .get("/api/articles/1")
+      .then(({ body: { article } }) => {
+        originalVotes = article.votes;
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: -1 })
+          .expect(200);
+      })
+      .then(({ body: { article } }) => {
+        expect(typeof article.votes).toBe("number");
+        expect(article.votes).toBe(originalVotes - 1);
+      });
+  });
+
+  test("400: responds with an error if inc_votes is missing or not a number", () => {
+    return request(app)
+      .patch("/api/articles/2")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
+
+  test("404: responds with an error if article id does not exist", () => {
+    return request(app)
+      .patch("/api/articles/9999")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Deletes a comment successfully", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "butter_bridge",
+        body: "Hello, my friends",
+      })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        const commentId = comment.comment_id;
+        return request(app)
+          .delete(`/api/comments/${commentId}`)
+          .expect(204)
+          .then(() => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body: { comments } }) => {
+                comments.forEach((comment) => {
+                  if (comment.comment_id === commentId) {
+                    found = true;
+                  }
+                });
+              });
+          });
       });
   });
 });

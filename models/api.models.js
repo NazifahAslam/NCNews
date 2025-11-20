@@ -63,6 +63,27 @@ const insertComments = (author, body, article_id) => {
     });
 };
 
+const updateArticleVote = (articleId, inc_votes) => {
+  return db
+    .query(
+      `UPDATE articles
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *; `,
+      [inc_votes, articleId]
+    )
+
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
+
+const removeComment = (comment_id) => {
+  return db.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [
+    comment_id,
+  ]);
+};
+
 module.exports = {
   allTopics,
   allArticles,
@@ -70,4 +91,6 @@ module.exports = {
   articleId,
   articleIdComments,
   insertComments,
+  updateArticleVote,
+  removeComment,
 };
