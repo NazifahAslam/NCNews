@@ -278,21 +278,50 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(201)
       .then(({ body: { comment } }) => {
         const commentId = comment.comment_id;
+        return request(app).delete(`/api/comments/${commentId}`).expect(204);
+      });
+  });
+
+  test("Check comment is deleted", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "butter_bridge",
+        body: "Hello, my friends",
+      })
+      .then(({ body: { comment } }) => {
+        const commentId = comment.comment_id;
         return request(app)
           .delete(`/api/comments/${commentId}`)
-          .expect(204)
           .then(() => {
             return request(app)
               .get("/api/articles/1/comments")
               .expect(200)
               .then(({ body: { comments } }) => {
-                comments.forEach((comment) => {
-                  if (comment.comment_id === commentId) {
-                    found = true;
-                  }
-                });
+                let isDeleted = comments.every(
+                  (comment) => comment.comment_id !== commentId
+                );
+                expect(isDeleted).toBe(true);
               });
           });
+      });
+  });
+
+  test("404: responds with an error if comment id does not exist", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+
+  test("400: responds with an error if comment id is missing or not a number", () => {
+    return request(app)
+      .delete("/api/comments/abc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
       });
   });
 });
