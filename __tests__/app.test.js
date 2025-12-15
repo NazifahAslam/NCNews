@@ -325,3 +325,29 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("GET /api/articles (sorting queries)", () => {
+  test("200: responds with articles sorted in descending order by default", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        for (let i = 0; i < articles.length - 1; i++) {
+          expect(articles[i].created_at >= articles[i + 1].created_at).toBe(
+            true
+          );
+        }
+      });
+  });
+
+  // test("200: responds with articles sorted by title in assending order", () => {
+  //   return request(app)
+  //     .get("/api/articles?sort_by=title")
+  //     .expect(200)
+  //     .then(({ body: { articles } }) => {
+  //       for (let i = 0; i < articles.length - 1; i++) {
+  //         expect(articles[i].title <= articles[i + 1].title).toBe(true);
+  //       }
+  //     });
+  // });
+});

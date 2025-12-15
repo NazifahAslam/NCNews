@@ -24,14 +24,13 @@ const fetchTopics = (request, response) => {
     });
 };
 
-const fetchArticles = (request, response) => {
-  return allArticles()
+const fetchArticles = (request, response, next) => {
+  const { sort_by, order } = request.query;
+  return allArticles(sort_by, order)
     .then((rows) => {
       response.status(200).send({ articles: rows });
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch(next);
 };
 
 const fetchUsers = (request, response) => {
