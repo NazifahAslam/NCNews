@@ -41,7 +41,7 @@ app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use((error, request, response, next) => {
   if (error.status) {
-    response.status(error.status).send({ message: "not found" });
+    response.status(error.status).send({ message: error.message });
   } else next(error);
 });
 
