@@ -403,4 +403,23 @@ describe("GET /api/articles (topic queries)", () => {
         }
       });
   });
+  test("200: responds with articles filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        for (let i = 0; i < articles.length - 1; i++) {
+          expect(articles[i].topic).toBe("mitch");
+        }
+      });
+  });
+
+  test("404: responds with an error when topic does not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=apple")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
 });

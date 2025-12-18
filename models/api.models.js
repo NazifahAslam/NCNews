@@ -34,6 +34,10 @@ const allArticles = (sort_by = "created_at", order = "DESC", topic = null) => {
       queryParams
     )
     .then(({ rows }) => {
+      if (topic && rows.length === 0) {
+        return Promise.reject({ status: 404, message: "not found" });
+      }
+
       const updatedRows = rows.map((row) => {
         const copyRow = { ...row };
         copyRow.comment_count = Number(row.comment_count);
