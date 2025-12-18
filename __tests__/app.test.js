@@ -391,3 +391,16 @@ describe("GET /api/articles (sorting queries)", () => {
       });
   });
 });
+
+describe("GET /api/articles (topic queries)", () => {
+  test("200: responds with articles filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        for (let i = 0; i < articles.length - 1; i++) {
+          expect(articles[i].topic).toBe("cats");
+        }
+      });
+  });
+});

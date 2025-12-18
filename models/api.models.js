@@ -6,15 +6,13 @@ const allTopics = () => {
   });
 };
 
-const allArticles = (sort_by = "created_at", order = "DESC") => {
+const allArticles = (sort_by = "created_at", order = "DESC", topic = null) => {
   const validColumns = ["created_at", "title", "votes", "author", "topic"];
-
   if (!validColumns.includes(sort_by)) {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
   let sortOrder;
-
   if (order.toLowerCase() === "asc") {
     sortOrder = "ASC";
   } else if (order.toLowerCase() === "desc") {
@@ -23,9 +21,17 @@ const allArticles = (sort_by = "created_at", order = "DESC") => {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
+  let topicFilter = "";
+  const queryParams = [];
+  if (topic) {
+    topicFilter = "WHERE articles.topic = $1";
+    queryParams.push(topic);
+  }
+
   return db
     .query(
-      `SELECT articles.article_id, articles.title, articles.body, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.${sort_by} ${sortOrder}`
+      `SELECT articles.article_id, articles.title, articles.body, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id ${topicFilter} GROUP BY articles.article_id ORDER BY articles.${sort_by} ${sortOrder}`,
+      queryParams
     )
     .then(({ rows }) => {
       const updatedRows = rows.map((row) => {

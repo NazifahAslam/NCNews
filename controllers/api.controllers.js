@@ -25,8 +25,8 @@ const fetchTopics = (request, response) => {
 };
 
 const fetchArticles = (request, response, next) => {
-  const { sort_by, order } = request.query;
-  return allArticles(sort_by, order)
+  const { sort_by, order, topic } = request.query;
+  return allArticles(sort_by, order, topic)
     .then((rows) => {
       response.status(200).send({ articles: rows });
     })
