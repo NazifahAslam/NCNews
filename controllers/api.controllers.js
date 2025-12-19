@@ -46,8 +46,8 @@ const fetchUsers = (request, response) => {
 const fetchArticleId = (request, response, next) => {
   const { article_id } = request.params;
   return articleId(article_id)
-    .then((rows) => {
-      response.status(200).send({ article: rows });
+    .then((row) => {
+      response.status(200).send({ article: row });
     })
     .catch((error) => {
       next(error);

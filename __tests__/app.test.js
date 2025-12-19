@@ -7,6 +7,7 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
 const comments = require("../db/data/test-data/comments");
 const { articleId } = require("../models/api.models");
+const articles = require("../db/data/test-data/articles");
 
 beforeEach(() => {
   return seed(data);
@@ -420,6 +421,17 @@ describe("GET /api/articles (topic queries)", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe("not found");
+      });
+  });
+});
+
+describe("GET /api/articles:articles_Id(comment_count)", () => {
+  test("200: responds with the number of comments for the given article", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(typeof article.comment_count).toBe("number");
       });
   });
 });
