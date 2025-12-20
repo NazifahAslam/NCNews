@@ -434,4 +434,22 @@ describe("GET /api/articles:articles_Id(comment_count)", () => {
         expect(typeof article.comment_count).toBe("number");
       });
   });
+
+  test("200: responds with the correct number of comments for the given article", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.comment_count).toBe(2);
+      });
+  });
+
+  test("200: responds with zero number of comments for the given article", () => {
+    return request(app)
+      .get("/api/articles/4")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.comment_count).toBe(0);
+      });
+  });
 });
